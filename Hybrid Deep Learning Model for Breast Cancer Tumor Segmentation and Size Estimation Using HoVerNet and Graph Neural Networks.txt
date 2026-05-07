@@ -1,0 +1,40 @@
+Hybrid Deep Learning Model for Breast Cancer Tumor Segmentation and Size Estimation Using HoVerNet and Graph Neural Networks
+
+Project Title
+Hybrid Deep Learning Model for Breast Cancer Tumor Segmentation and Size Estimation Using HoVerNet and Graph Neural Networks
+Base Paper Link
+
+Expected Inputs
+
+Expected Outputs
+•  Nuclei identification using HoverNet 
+•  Nucleus segmentation masks 
+•  Cell density and spatial relationship maps 
+•  Tumor area/size estimation 
+•  Explainability heatmaps (XAI) showing critical decision regions
+•  Confusion matrix for final accuracy
+•  Comparison with other algorithms like CNN, RNN, ResNet etc and show performance metrics (confusion matrix, AOC, ROC, graphs)
+•  Bar graphs and ROC curves for all algorithms 
+Dataset
+https://drive.google.com/file/d/1fHGB85UF9EilsPYsDCxlAjeCy4Zex_gR/view?usp=sharing
+Dataset is already uploaded on kaggle by me, just gotta use it.
+
+Algorithm (If Known)
+•  HoVerNet - For nucleus segmentation and cell-type classification 
+•  Graph Neural Network (GraphSAGE or GAT) - For spatial cell relationship analysis 
+
+Tech Stack: 
+•  Frontend: HTML, CSS, JavaScript 
+•  Backend: Flask (Python) 
+•  Libraries: PyTorch/TensorFlow, OpenCV, PyTorch Geometric, NumPy, Pillow
+
+Comments
+Dataset and Model can be change during the development if its not performing well during the development.
+
+Workflow
+•  Image Upload - User uploads histopathology image through web interface 
+•  Nucleus Detection - HoVerNet identifies and segments individual cell nuclei 
+•  Graph Construction - Cells converted to nodes, spatial relationships to edges 
+•  GNN Analysis - Graph neural network analyzes cell density patterns and structural irregularities 
+•  Results Display -  size estimation, explainability heatmap, confusion matrix for current model and comparison models, comparison with other algorithms and display HoverNet is more accurate, bar graphs, curves and confusion matrix for comparison 
+

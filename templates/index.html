@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breast Cancer Tumor Analysis | HoVerNet-GNN (Hybrid)</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="logo">
+          <i class="fas fa-microscope"></i>
+          <span>Breast Cancer Analysis</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#upload">Upload</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#comparison">Comparison</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="container">
+        <h1>Hybrid Deep Learning Model for Breast Cancer Tumor Segmentation</h1>
+        <p>
+          Using HoVerNet-GNN (Hybrid Model) for nucleus identification,
+          segmentation, and size estimation
+        </p>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+      <!-- Upload Section -->
+      <section id="upload" class="section">
+        <h2><i class="fas fa-upload"></i> Upload Histopathology Image</h2>
+        <div class="upload-area" id="uploadArea">
+          <div class="upload-content">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <h3>Drag & Drop Image Here</h3>
+            <p>or click to browse</p>
+            <p class="file-info">Supported: JPG, PNG (Max 16MB)</p>
+          </div>
+          <input type="file" id="fileInput" accept=".jpg,.jpeg,.png" hidden />
+        </div>
+
+        <div id="previewArea" class="preview-area" style="display: none">
+          <img id="previewImage" class="preview-image" />
+          <div class="preview-actions">
+            <button id="analyzeBtn" class="btn btn-primary">
+              <i class="fas fa-search-plus"></i> Analyze Image
+            </button>
+            <button id="resetBtn" class="btn btn-secondary">
+              <i class="fas fa-redo"></i> Reset
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Loading Overlay -->
+      <div id="loadingOverlay" class="loading-overlay" style="display: none">
+        <div class="loading-content">
+          <div class="spinner"></div>
+          <p>Analyzing image with HoVerNet-GNN (Hybrid)...</p>
+          <p class="loading-sub">
+            Detecting nuclei and computing spatial relationships
+          </p>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <section id="results" class="section" style="display: none">
+        <h2><i class="fas fa-chart-bar"></i> Analysis Results</h2>
+
+        <!-- Prediction Card -->
+        <div class="prediction-card">
+          <div class="prediction-main">
+            <h3>Classification Result</h3>
+            <div class="prediction-badge" id="predictionBadge">-</div>
+            <p class="confidence">
+              Confidence: <span id="confidenceValue">-</span>
+            </p>
+            <p class="model-used">
+              Model Used: <span id="modelUsedValue">HoVerNet-GNN (Hybrid)</span>
+            </p>
+          </div>
+          <div class="prediction-probs" id="probabilitiesChart">
+            <!-- Chart will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <i class="fas fa-circle metric-icon"></i>
+            <div class="metric-value" id="nucleiCount">-</div>
+            <div class="metric-label">Detected Nuclei</div>
+          </div>
+          <div class="metric-card">
+            <i class="fas fa-percentage metric-icon"></i>
+            <div class="metric-value" id="tumorPercentage">-</div>
+            <div class="metric-label">Tumor Area</div>
+          </div>
+          <div class="metric-card">
+            <i class="fas fa-th metric-icon"></i>
+            <div class="metric-value" id="cellDensity">-</div>
+            <div class="metric-label">Cell Density</div>
+          </div>
+          <div class="metric-card">
+            <i class="fas fa-layer-group metric-icon"></i>
+            <div class="metric-value" id="tumorGrade">-</div>
+            <div class="metric-label">Tumor Grade</div>
+          </div>
+          <div class="metric-card">
+            <i class="fas fa-project-diagram metric-icon"></i>
+            <div class="metric-value" id="numConnections">-</div>
+            <div class="metric-label">Spatial Connections</div>
+          </div>
+        </div>
+
+        <!-- Visualization Tabs -->
+        <div class="visualization-section">
+          <h3>Visualization Outputs</h3>
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="original">Original</button>
+            <button class="tab-btn" data-tab="segmentation">
+              Segmentation
+            </button>
+            <button class="tab-btn" data-tab="heatmap">Nucleus Map</button>
+            <button class="tab-btn" data-tab="density">Density Map</button>
+            <button class="tab-btn" data-tab="xai">XAI Heatmap</button>
+            <button class="tab-btn" data-tab="spatial">Spatial Graph</button>
+            <button class="tab-btn" data-tab="hv">HV Gradient</button>
+          </div>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab-original">
+              <img id="imgOriginal" class="result-image" />
+              <p class="tab-description">
+                Original uploaded histopathology image
+              </p>
+            </div>
+            <div class="tab-pane" id="tab-segmentation">
+              <img id="imgSegmentation" class="result-image" />
+              <p class="tab-description">
+                Nucleus segmentation mask overlay (red regions indicate detected
+                nuclei)
+              </p>
+            </div>
+            <div class="tab-pane" id="tab-heatmap">
+              <img id="imgHeatmap" class="result-image" />
+              <p class="tab-description">
+                HoVerNet nucleus probability map - brighter areas indicate
+                higher nucleus probability
+              </p>
+            </div>
+            <div class="tab-pane" id="tab-density">
+              <img id="imgDensity" class="result-image" />
+              <p class="tab-description">
+                Cell density heatmap showing spatial distribution of nuclei
+              </p>
+            </div>
+            <div class="tab-pane" id="tab-xai">
+              <img id="imgXai" class="result-image" />
+              <p class="tab-description">
+                Explainability (XAI) heatmap showing critical decision regions
+                for classification
+              </p>
+              <div id="xaiExplanation" class="xai-explanation-box"></div>
+            </div>
+            <div class="tab-pane" id="tab-spatial">
+              <img id="imgSpatial" class="result-image" />
+              <p class="tab-description">
+                Spatial relationship graph - nodes represent nuclei, edges
+                represent spatial proximity (GNN input)
+              </p>
+            </div>
+            <div class="tab-pane" id="tab-hv">
+              <img id="imgHv" class="result-image" />
+              <p class="tab-description">
+                Horizontal-Vertical gradient magnitude for nucleus boundary
+                detection
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Model Comparison Section -->
+      <section id="comparison" class="section">
+        <h2><i class="fas fa-balance-scale"></i> Model Comparison</h2>
+        <p class="section-desc">
+          Live comparison from current metrics data (HoVerNet-GNN is the
+          deployed model)
+        </p>
+
+        <!-- Comparison Table -->
+        <div class="comparison-table-wrapper">
+          <table class="comparison-table" id="comparisonTable">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Accuracy (%)</th>
+                <th>F1 Score (%)</th>
+                <th>Precision (%)</th>
+                <th>Recall (%)</th>
+                <th>AUC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Filled by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h4>Accuracy Comparison</h4>
+            <canvas id="accuracyChart"></canvas>
+          </div>
+          <div class="chart-card">
+            <h4>F1 / Precision / Recall Comparison</h4>
+            <canvas id="metricsChart"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>Breast Cancer Tumor Segmentation and Size Estimation</p>
+        <p>Using HoVerNet-GNN (Hybrid Model)</p>
+        <p class="tech-stack">
+          <span><i class="fab fa-python"></i> Python</span>
+          <span><i class="fas fa-fire"></i> PyTorch</span>
+          <span><i class="fas fa-flask"></i> Flask</span>
+          <span><i class="fab fa-html5"></i> HTML/CSS/JS</span>
+        </p>
+      </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

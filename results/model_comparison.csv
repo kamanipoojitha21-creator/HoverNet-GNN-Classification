@@ -1,0 +1,6 @@
+Model,Accuracy (%),F1 Score (%),Precision (%),Recall (%)
+Simple CNN,92.67,92.71,92.91,92.67
+ResNet50,90.83,90.83,90.89,90.83
+HoVerNet,90.83,90.89,91.11,90.83
+HoVerNet-GNN,33.00,16.54,10.89,33.00
+RNN-LSTM,92.50,92.39,92.49,92.50
